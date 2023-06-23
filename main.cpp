@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
         std::cerr << "Failed to get the version manifest: " << response.error.message;
         return 3;
     }
-    std::cout << "Finished getting version manifest\n";
+    std::cout << "Finished getting version manifest.\n";
 
     auto manifestInfo = process_manifest_json(response.text);
 
@@ -115,7 +115,7 @@ int main(int argc, char** argv) {
 
         }
     }
-    std::cout << "Getting info for version '" << version_name << "'\n";
+    std::cout << "Getting info for version '" << version_name << "' from " << version_json_url << "\n";
     const auto versionJsonResponse = cpr::Get(cpr::Url(version_json_url));
     VersionUrlResult versionResult;
     try {
@@ -123,12 +123,13 @@ int main(int argc, char** argv) {
     }
     catch (simdjson::simdjson_error const& e){
         std::cerr << "Failed to process version json: " << e.what() << "\n(it is possible that this failed because server jars for versions prior to 1.2.5 are not available from Mojang)";
+        return 6;
     }
 
     std::cout << "Finished getting version info.\n";
     auto output_path = output_file_path(version_name);
 
-    std::cout << "Downloading server.jar for version '" << version_name << " from " << versionResult.url << " to [" << output_path << "]\n";
+    std::cout << "Downloading server.jar for version '" << version_name << "' from " << versionResult.url << " to " << output_path << "\n";
 
     std::ofstream output_file(output_path);
     auto download_response = cpr::Download(output_file, cpr::Url(versionResult.url));
