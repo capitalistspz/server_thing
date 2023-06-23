@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
 
             }
             else if (arg == "--help"){
-                std::cout << "server_thing [OPTIONS?]"
+                std::cout << "server_thing [OPTIONS?]\n"
                              "--help                        This message\n"
                              "--version [GAME_VERSION]      Select a version to download\n"
                              "--path [SERVER JAR PATH]      The path that the jar should be downloaded to.\n";
@@ -122,20 +122,20 @@ int main(int argc, char** argv) {
         versionResult = process_version_json(versionJsonResponse.text);
     }
     catch (simdjson::simdjson_error const& e){
-        std::cerr << "Failed to process version json " << e.what() << '\n' << "(it is possible that this failed because server jars for versions prior to 1.2.5 are not available from Mojang)";
+        std::cerr << "Failed to process version json: " << e.what() << "\n(it is possible that this failed because server jars for versions prior to 1.2.5 are not available from Mojang)";
     }
 
     std::cout << "Finished getting version info.\n";
     auto output_path = output_file_path(version_name);
 
-    std::cout << "Downloading server.jar for version '" << version_name << " to [" << output_path << "]\n";
+    std::cout << "Downloading server.jar for version '" << version_name << " from " << versionResult.url << " to [" << output_path << "]\n";
 
     std::ofstream output_file(output_path);
     auto download_response = cpr::Download(output_file, cpr::Url(versionResult.url));
     if (download_response.error){
-        std::cerr << download_response.error.message;
+        std::cerr << "Failed to download server jar: " << download_response.error.message;
         return 4;
     }
-    std::cout << "Finished downloading server jar\n";
+    std::cout << "Finished downloading server jar.\n";
     return 0;
 }
