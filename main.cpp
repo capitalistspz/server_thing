@@ -66,11 +66,11 @@ int main(int argc, char** argv) {
     std::cout << "Finished getting version manifest\n";
 
     auto manifestInfo = process_manifest_json(response.text);
+
     std::string version_name;
     std::string version_json_url;
     if (!chosen_version.empty()){
         version_name = chosen_version;
-        std::getline(std::cin, version_name);
 
         auto info = manifestInfo.version_map.find(version_name);
         if (info == manifestInfo.version_map.end()){
